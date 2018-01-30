@@ -27,19 +27,30 @@ app.get('/posts', (req, res) => {
 });
 // Show the search form
 app.get('/search', (req, res) => {
-
-
-        request.get({
-          url: 'http://jsonplaceholder.typicode.com/posts'
-        }, function(err,result){
-          console.log(result);
-          if(err)
-            res.render('search.ejs', { product: '' })
-          if(result.statusCode !== 200 )
-          console.log(res.body)
-            res.render('search_result.ejs', { product: result.body })
-        });
+  res.render('search.ejs', {result: ''})
 });
 
 // Find all comments for post
-app.post('/search', (req, res) => {});
+app.post('/search', (req, res) => {
+  var name = req.body['title'];
+  request.get({
+    url: 'http://jsonplaceholder.typicode.com/posts'
+  }, function(err,result){
+    var posts = JSON.parse(result.body);
+    var id = -1;
+    for (var post in posts) {
+      if (posts[post].title == name)
+        id = posts[post].id;
+    }
+    if(id == -1)
+      res.render('search.ejs', { product: '' })
+    else {
+      request.get({
+        url: 'http://jsonplaceholder.typicode.com/posts/' + id.toString() + '/comments'
+      }, function(err,r){
+        console.log(JSON.parse(r.body));
+        res.render('search_result.ejs', { comments: JSON.parse(r.body) })
+      })
+    }
+  });
+});
