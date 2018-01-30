@@ -7,6 +7,13 @@
 </head>
 <body>
   <h1>All posts</h1>
-
+  <ul class='posts'>
+  <% for(var i=0; i < posts.length; i++) {%>
+    <li class='posts'>
+      <span><%= posts[i].title %></span><br /><br />
+      <span><%= posts[i].body %></span><br /><br />
+    </li>
+  <% } %>
+  </ul>
 </body>
 </html>

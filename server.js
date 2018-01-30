@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const request=require('request');
 const bodyParser = require('body-parser');
 
 app.listen(process.env.PORT || 3000, () => {
@@ -17,11 +18,27 @@ app.get('/', (req, res) => {
 });
 
 // List all posts
-app.get('/posts', (req, res) => {});
-
+app.get('/posts', (req, res) => {
+  request.get({
+    url: 'http://jsonplaceholder.typicode.com/posts'
+  }, function(err,result){
+    res.render('posts.ejs', { posts: JSON.parse(result.body) });
+  });
+});
 // Show the search form
 app.get('/search', (req, res) => {
-   res.render('search.ejs', { post: '' });
+
+
+        request.get({
+          url: 'http://jsonplaceholder.typicode.com/posts'
+        }, function(err,result){
+          console.log(result);
+          if(err)
+            res.render('search.ejs', { product: '' })
+          if(result.statusCode !== 200 )
+          console.log(res.body)
+            res.render('search_result.ejs', { product: result.body })
+        });
 });
 
 // Find all comments for post
