@@ -27,7 +27,7 @@ app.get('/posts', (req, res) => {
 });
 // Show the search form
 app.get('/search', (req, res) => {
-  res.render('search.ejs', {result: ''})
+  res.render('search.ejs', {searchresult: ''})
 });
 
 // Find all comments for post
@@ -35,19 +35,19 @@ app.post('/search', (req, res) => {
   var name = req.body['title'];
   request.get({
     url: 'http://jsonplaceholder.typicode.com/posts'
-  }, function(err,result){
+  }, function(errorloop1,result){
     var posts = JSON.parse(result.body);
-    var id = -1;
+    var id = -999;
     for (var post in posts) {
       if (posts[post].title == name)
         id = posts[post].id;
     }
-    if(id == -1)
-      res.render('search.ejs', { product: '' })
+    if(id == -999)
+      res.render('search.ejs', { comments: '' })
     else {
       request.get({
         url: 'http://jsonplaceholder.typicode.com/posts/' + id.toString() + '/comments'
-      }, function(err,r){
+      }, function(errorloop2,r){
         console.log(JSON.parse(r.body));
         res.render('search_result.ejs', { comments: JSON.parse(r.body) })
       })
